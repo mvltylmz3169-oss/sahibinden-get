@@ -233,45 +233,98 @@ export default function ProductPage() {
             <p className="text-[12px]  text-red-800 ">{currentProduct.listing.type}</p>
            </div>
 
+           {/* Dinamik Specs - Sadece tanımlı olanlar gösterilir */}
+           {currentProduct.product.specs.storage && (
            <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
             <p className="text-[12px] text-gray-700">Dahili Hafıza</p>
             <p className="text-[12px] text-gray-700">{currentProduct.product.specs.storage}</p>
            </div>
+           )}
 
+           {currentProduct.product.specs.os && (
            <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
             <p className="text-[12px] text-gray-700">İşletim Sistemi</p>
             <p className="text-[12px] text-gray-700">{currentProduct.product.specs.os}</p>
            </div>
+           )}
 
+           {currentProduct.product.specs.frontCamera && (
            <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
             <p className="text-[12px] text-gray-700">Ön Kamera</p>
             <p className="text-[12px] text-gray-700">{currentProduct.product.specs.frontCamera}</p>
            </div>
+           )}
 
+           {currentProduct.product.specs.backCamera && (
            <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
             <p className="text-[12px] text-gray-700">Arka Kamera</p>
             <p className="text-[12px] text-gray-700">{currentProduct.product.specs.backCamera}</p>
            </div>
+           )}
 
+           {currentProduct.product.specs.color && (
            <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
             <p className="text-[12px] text-gray-700">Renk</p>
             <p className="text-[12px] text-gray-700">{currentProduct.product.specs.color}</p>
            </div>
+           )}
 
+           {currentProduct.product.specs.warranty && (
            <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
             <p className="text-[12px] text-gray-700">Garanti</p>
             <p className="text-[12px] text-gray-700">{currentProduct.product.specs.warranty}</p>
            </div>
+           )}
 
+           {currentProduct.product.specs.screen && (
            <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
             <p className="text-[12px] text-gray-700">Ekran</p>
             <p className="text-[12px] text-gray-700">{currentProduct.product.specs.screen}</p>
            </div>
+           )}
 
+           {currentProduct.product.specs.trade && (
            <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
             <p className="text-[12px] text-gray-700">Takas</p>
             <p className="text-[12px] text-gray-700">{currentProduct.product.specs.trade}</p>
            </div>
+           )}
+
+           {/* PS5 / Konsol Özellikleri */}
+           {currentProduct.product.specs.version && (
+           <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
+            <p className="text-[12px] text-gray-700">Sürüm</p>
+            <p className="text-[12px] text-gray-700">{currentProduct.product.specs.version}</p>
+           </div>
+           )}
+
+           {currentProduct.product.specs.controller && (
+           <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
+            <p className="text-[12px] text-gray-700">Kontrolör</p>
+            <p className="text-[12px] text-gray-700">{currentProduct.product.specs.controller}</p>
+           </div>
+           )}
+
+           {currentProduct.product.specs.resolution && (
+           <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
+            <p className="text-[12px] text-gray-700">Çözünürlük</p>
+            <p className="text-[12px] text-gray-700">{currentProduct.product.specs.resolution}</p>
+           </div>
+           )}
+
+           {currentProduct.product.specs.condition && (
+           <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
+            <p className="text-[12px] text-gray-700">Durumu</p>
+            <p className="text-[12px] text-gray-700">{currentProduct.product.specs.condition}</p>
+           </div>
+           )}
+
+           {currentProduct.product.specs.accessories && (
+           <div className="w-full py-2 flex items-center justify-between border-b border-gray-200">
+            <p className="text-[12px] text-gray-700">Aksesuarlar</p>
+            <p className="text-[12px] text-gray-700">{currentProduct.product.specs.accessories}</p>
+           </div>
+           )}
 
           
            

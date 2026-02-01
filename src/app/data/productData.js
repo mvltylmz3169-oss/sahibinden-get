@@ -1,31 +1,35 @@
 export const productData = [
 
   {
-    id: "1",
+    id: "playstation-5-ps5-disk-surumlu-2-kol-kutu-fatura-mevcut-s-get-id-31032025143520-2250",
     // Ürün Detayları
     product: {
-      title: "iPhone 15 promax 256 GB kutu fatura şarj mevcut",
-      price: 41000,
-      serviceFee: 450, // Hizmet bedeli
+      title: "PlayStation 5 (PS5) Disk Sürümlü - 2 Kol - Kutu Fatura Mevcut",
+      price: 22500,
+      serviceFee: 350, // Hizmet bedeli
       get totalPrice() {
           return this.price + this.serviceFee;
       }, // Toplam fiyat (price + serviceFee)
 
       imagesUrls: [
-        "https://ik.imagekit.io/nsnnosdo1/iphone.jpg?updatedAt=1744387783440",
-        "https://ik.imagekit.io/nsnnosdo1/WhatsApp%20Image%202025-03-31%20at%2019.20.15%20(5).jpeg?updatedAt=1744388175045",
-        "https://ik.imagekit.io/nsnnosdo1/WhatsApp%20Image%202025-03-31%20at%2019.20.15%20(1).jpeg?updatedAt=1744388174985",
-        "https://ik.imagekit.io/nsnnosdo1/WhatsApp%20Image%202025-03-31%20at%2019.20.15%20(2).jpeg?updatedAt=1744388174772",
+        "/ps5/ps5.jpeg",
+        "/ps5/ps51.jpeg",
+        "/ps5/ps52.jpeg",
+        "/ps5/ps53.jpeg",
+        "/ps5/ps54.jpeg",
+        "/ps5/ps55.jpeg",
+        "/ps5/ps56.jpeg",
       ],
     
       specs: {
-        storage: "256 GB",
-        os: "iOS",
-        frontCamera: "12 Mp",
-        backCamera: "12 Mp",
-        color: "Titanyum",
-        warranty: "Distribütör Garanti",
-        screen: "48 Mp",
+        storage: "825 GB SSD",
+        version: "Disk Sürümlü (CFI-1216A)",
+        controller: "2 Adet DualSense",
+        color: "Beyaz",
+        warranty: "Yok",
+        resolution: "4K 120Hz / 8K",
+        condition: "Sorunsuz, Temiz Kullanılmış",
+        accessories: "Orijinal Kutu, 2x DualSense, HDMI Kablo, Güç Kablosu",
         trade: "Yok"
       }
     },
@@ -39,8 +43,8 @@ export const productData = [
     // İlan Detayları
     listing: {
       id: "323847328",
-      date: "31 Mart 2025",
-      category: "İkinci El ve Sıfır Alışveriş > Elektronik Eşya > Telefon > iPhone 15 Pro Max Türkiye Cihaz",
+      date: "01 Şubat 2026",
+      category: "İkinci El ve Sıfır Alışveriş > Elektronik Eşya > Oyun Konsolu > Sony PlayStation 5",
       type: "Sahibinden"
     },
 
@@ -70,6 +74,8 @@ export const productData = [
       ]
     }
   },
+  
+
   
   //İphone 11 
   {
