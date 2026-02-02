@@ -22,15 +22,15 @@ export const productData = [
       ],
     
       specs: {
-        storage: "825 GB SSD",
-        version: "Disk Sürümlü (CFI-1216A)",
-        controller: "2 Adet DualSense",
-        color: "Beyaz",
-        warranty: "Yok",
-        resolution: "4K 120Hz / 8K",
-        condition: "Sorunsuz, Temiz Kullanılmış",
-        accessories: "Orijinal Kutu, 2x DualSense, HDMI Kablo, Güç Kablosu",
-        trade: "Yok"
+        "Dahili Hafıza": "825 GB SSD",
+        "Sürüm": "Disk Sürümlü (CFI-1216A)",
+        "Kontrolör": "2 Adet DualSense",
+        "Renk": "Beyaz",
+        "Garanti": "Yok",
+        "Çözünürlük": "4K 120Hz / 8K",
+        "Durumu": "Sorunsuz, Temiz Kullanılmış",
+        "Aksesuarlar": "Orijinal Kutu, 2x DualSense, HDMI Kablo, Güç Kablosu",
+        "Takas": "Yok"
       }
     },
 
@@ -100,14 +100,14 @@ export const productData = [
       ],
     
       specs: {
-        storage: "128 GB",
-        os: "iOS",
-        frontCamera: "12 Mp",
-        backCamera: "12 Mp",
-        color: "Titanyum",
-        warranty: "Distribütör Garanti",
-        screen: "48 Mp",
-        trade: "Yok"
+        "Depolama": "128 GB",
+        "İşletim Sistemi": "iOS",
+        "Ön Kamera": "12 Mp",
+        "Arka Kamera": "12 Mp",
+        "Renk": "Titanyum",
+        "Garanti": "Distribütör Garanti",
+        "Ekran": "48 Mp",
+        "Takas": "Yok"
       }
     },
 
@@ -175,14 +175,14 @@ export const productData = [
       ],
     
       specs: {
-        storage: "128 GB",
-        os: "iOS",
-        frontCamera: "12 Mp",
-        backCamera: "12 Mp",
-        color: "Titanyum",
-        warranty: "Distribütör Garanti",
-        screen: "48 Mp",
-        trade: "Yok"
+        "Depolama": "128 GB",
+        "İşletim Sistemi": "iOS",
+        "Ön Kamera": "12 Mp",
+        "Arka Kamera": "12 Mp",
+        "Renk": "Titanyum",
+        "Garanti": "Distribütör Garanti",
+        "Ekran": "48 Mp",
+        "Takas": "Yok"
       }
     },
 
@@ -255,14 +255,14 @@ export const productData = [
       ],
     
       specs: {
-        storage: "128 GB",
-        os: "iOS",
-        frontCamera: "12 Mp",
-        backCamera: "12 Mp",
-        color: "Mavi",
-        warranty: "Distribütör Garanti",
-        screen: "48 Mp",
-        trade: "Yok"
+        "Depolama": "128 GB",
+        "İşletim Sistemi": "iOS",
+        "Ön Kamera": "12 Mp",
+        "Arka Kamera": "12 Mp",
+        "Renk": "Mavi",
+        "Garanti": "Distribütör Garanti",
+        "Ekran": "48 Mp",
+        "Takas": "Yok"
       }
     },
 

@@ -128,6 +128,94 @@ export const updateProduct = async (productId, productData) => {
   }
 };
 
+// İngilizce -> Türkçe spec key çeviri sözlüğü
+const specKeyTranslations = {
+  'storage': 'Depolama',
+  'os': 'İşletim Sistemi',
+  'frontCamera': 'Ön Kamera',
+  'backCamera': 'Arka Kamera',
+  'color': 'Renk',
+  'warranty': 'Garanti',
+  'screen': 'Ekran',
+  'trade': 'Takas',
+  'version': 'Sürüm',
+  'controller': 'Kontrolör',
+  'resolution': 'Çözünürlük',
+  'condition': 'Durumu',
+  'accessories': 'Aksesuarlar',
+  'ram': 'RAM',
+  'processor': 'İşlemci',
+  'battery': 'Pil',
+  // Halihazırda Türkçe olanlar için de ekleyelim (değişiklik yapmayacak)
+  'Depolama': 'Depolama',
+  'İşletim Sistemi': 'İşletim Sistemi',
+  'Ön Kamera': 'Ön Kamera',
+  'Arka Kamera': 'Arka Kamera',
+  'Renk': 'Renk',
+  'Garanti': 'Garanti',
+  'Ekran': 'Ekran',
+  'Takas': 'Takas',
+  'Sürüm': 'Sürüm',
+  'Kontrolör': 'Kontrolör',
+  'Çözünürlük': 'Çözünürlük',
+  'Durumu': 'Durumu',
+  'Aksesuarlar': 'Aksesuarlar',
+  'Dahili Hafıza': 'Dahili Hafıza',
+};
+
+// Tek bir ürünün spec key'lerini Türkçe'ye çevir
+export const translateProductSpecs = (specs) => {
+  if (!specs || typeof specs !== 'object') return specs;
+  
+  const translatedSpecs = {};
+  for (const [key, value] of Object.entries(specs)) {
+    const translatedKey = specKeyTranslations[key] || key;
+    translatedSpecs[translatedKey] = value;
+  }
+  return translatedSpecs;
+};
+
+// Tüm Firebase ürünlerinin spec key'lerini Türkçe'ye çevir
+export const translateAllProductsSpecs = async () => {
+  try {
+    const products = await getProducts();
+    const results = { updated: 0, skipped: 0, errors: [] };
+    
+    for (const product of products) {
+      try {
+        if (!product.product?.specs) {
+          results.skipped++;
+          continue;
+        }
+        
+        const originalSpecs = product.product.specs;
+        const translatedSpecs = translateProductSpecs(originalSpecs);
+        
+        // Eğer değişiklik varsa güncelle
+        const hasChanges = JSON.stringify(originalSpecs) !== JSON.stringify(translatedSpecs);
+        if (hasChanges) {
+          await updateProduct(product.id, {
+            product: {
+              ...product.product,
+              specs: translatedSpecs
+            }
+          });
+          results.updated++;
+        } else {
+          results.skipped++;
+        }
+      } catch (error) {
+        results.errors.push({ productId: product.id, error: error.message });
+      }
+    }
+    
+    return results;
+  } catch (error) {
+    console.error('Error translating products:', error);
+    throw error;
+  }
+};
+
 // Delete product
 export const deleteProduct = async (productId) => {
   try {

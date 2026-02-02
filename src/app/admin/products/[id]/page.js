@@ -109,6 +109,24 @@ export default function EditProductPage() {
     }));
   };
 
+  // Yaygın özellik önerileri (Türkçe)
+  const commonSpecs = [
+    { key: 'Depolama', placeholder: '128 GB' },
+    { key: 'Renk', placeholder: 'Siyah' },
+    { key: 'Garanti', placeholder: '2 Yıl' },
+    { key: 'Durum', placeholder: 'Sıfır / İkinci El' },
+    { key: 'Ekran', placeholder: '6.1 inç' },
+    { key: 'İşletim Sistemi', placeholder: 'iOS / Android' },
+    { key: 'Ön Kamera', placeholder: '12 MP' },
+    { key: 'Arka Kamera', placeholder: '48 MP' },
+    { key: 'RAM', placeholder: '8 GB' },
+    { key: 'İşlemci', placeholder: 'Apple A16' },
+    { key: 'Pil', placeholder: '5000 mAh' },
+    { key: 'Versiyon', placeholder: 'Pro Max' },
+    { key: 'Aksesuar', placeholder: 'Kutu, Şarj, Kablo' },
+    { key: 'Takas', placeholder: 'Var / Yok' },
+  ];
+
   const handleSpecChange = (key, value) => {
     setFormData(prev => ({
       ...prev,
@@ -118,6 +136,21 @@ export default function EditProductPage() {
           ...prev.product.specs,
           [key]: value
         }
+      }
+    }));
+  };
+
+  const handleSpecKeyChange = (oldKey, newKey) => {
+    if (oldKey === newKey) return;
+    const newSpecs = { ...formData.product.specs };
+    const value = newSpecs[oldKey];
+    delete newSpecs[oldKey];
+    newSpecs[newKey] = value;
+    setFormData(prev => ({
+      ...prev,
+      product: {
+        ...prev.product,
+        specs: newSpecs
       }
     }));
   };
@@ -342,57 +375,103 @@ export default function EditProductPage() {
 
       {/* Product Specs */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Ürün Özellikleri (Specs)</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Ürün Özellikleri</h2>
         
-        <div className="space-y-3 mb-4">
-          {Object.entries(formData.product.specs).map(([key, value]) => (
-            <div key={key} className="flex items-center gap-3">
-              <input
-                type="text"
-                value={key}
-                disabled
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
-              />
-              <input
-                type="text"
-                value={value}
-                onChange={(e) => handleSpecChange(key, e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-              <button
-                onClick={() => handleRemoveSpec(key)}
-                className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
+        {Object.keys(formData.product.specs).length === 0 ? (
+          <div className="text-center py-6 bg-gray-50 rounded-lg mb-4">
+            <svg className="w-10 h-10 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p className="text-sm text-gray-500">Henüz özellik eklenmedi</p>
+            <p className="text-xs text-gray-400 mt-1">Aşağıdan yeni özellik ekleyebilirsiniz</p>
+          </div>
+        ) : (
+          <div className="space-y-3 mb-4">
+            <div className="grid grid-cols-[1fr,1fr,auto] gap-3 text-xs text-gray-500 font-medium px-1">
+              <span>Özellik Adı</span>
+              <span>Değer</span>
+              <span className="w-10"></span>
             </div>
-          ))}
-        </div>
+            {Object.entries(formData.product.specs).map(([key, value]) => (
+              <div key={key} className="flex items-center gap-3">
+                <input
+                  type="text"
+                  value={key}
+                  onChange={(e) => handleSpecKeyChange(key, e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Özellik adı"
+                />
+                <input
+                  type="text"
+                  value={value}
+                  onChange={(e) => handleSpecChange(key, e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Değer"
+                />
+                <button
+                  onClick={() => handleRemoveSpec(key)}
+                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                  title="Özelliği sil"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Add New Spec */}
-        <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
-          <input
-            type="text"
-            placeholder="Özellik adı (örn: storage)"
-            value={newSpec.key}
-            onChange={(e) => setNewSpec(prev => ({ ...prev, key: e.target.value }))}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-          <input
-            type="text"
-            placeholder="Değer (örn: 128 GB)"
-            value={newSpec.value}
-            onChange={(e) => setNewSpec(prev => ({ ...prev, value: e.target.value }))}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-          <button
-            onClick={handleAddSpec}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Ekle
-          </button>
+        <div className="pt-4 border-t border-gray-200">
+          <p className="text-sm font-medium text-gray-700 mb-3">Yeni Özellik Ekle</p>
+          <div className="flex items-center gap-3">
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                list="spec-suggestions"
+                placeholder="Özellik adı (örn: Renk)"
+                value={newSpec.key}
+                onChange={(e) => setNewSpec(prev => ({ ...prev, key: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <datalist id="spec-suggestions">
+                {commonSpecs.map(spec => (
+                  <option key={spec.key} value={spec.key} />
+                ))}
+              </datalist>
+            </div>
+            <input
+              type="text"
+              placeholder="Değer (örn: Siyah)"
+              value={newSpec.value}
+              onChange={(e) => setNewSpec(prev => ({ ...prev, value: e.target.value }))}
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <button
+              onClick={handleAddSpec}
+              disabled={!newSpec.key || !newSpec.value}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Ekle
+            </button>
+          </div>
+          
+          {/* Quick Add Buttons */}
+          <div className="mt-3">
+            <p className="text-xs text-gray-500 mb-2">Hızlı ekle:</p>
+            <div className="flex flex-wrap gap-2">
+              {commonSpecs.slice(0, 8).map(spec => (
+                <button
+                  key={spec.key}
+                  onClick={() => setNewSpec({ key: spec.key, value: '' })}
+                  className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors"
+                >
+                  + {spec.key}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 

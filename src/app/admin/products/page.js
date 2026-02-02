@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getProducts, deleteProduct, addProduct } from '@/lib/firebaseServices';
+import { getProducts, deleteProduct, addProduct, translateAllProductsSpecs } from '@/lib/firebaseServices';
 import { productData } from '@/app/data/productData';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMigrating, setIsMigrating] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -64,6 +65,24 @@ export default function ProductsPage() {
     }
   };
 
+  const translateSpecsToTurkish = async () => {
+    if (!confirm('Tüm ürünlerin özellik adlarını Türkçe\'ye çevirmek istediğinize emin misiniz?')) {
+      return;
+    }
+    
+    setIsTranslating(true);
+    try {
+      const results = await translateAllProductsSpecs();
+      await loadProducts();
+      alert(`Çeviri tamamlandı!\n\nGüncellenen: ${results.updated}\nAtlanan (zaten Türkçe): ${results.skipped}\nHata: ${results.errors.length}`);
+    } catch (error) {
+      console.error('Translation error:', error);
+      alert('Çeviri sırasında bir hata oluştu: ' + error.message);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
   const handleDelete = async (productId) => {
     try {
       await deleteProduct(productId);
@@ -96,14 +115,38 @@ export default function ProductsPage() {
           <h1 className="text-2xl font-bold text-gray-900">Ürün Yönetimi</h1>
           <p className="text-gray-600">Tüm ürünleri görüntüle ve düzenle</p>
         </div>
-        <Link href="/admin/products/new">
-          <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Yeni Ürün Ekle
-          </button>
-        </Link>
+        <div className="flex gap-2">
+          {products.length > 0 && (
+            <button 
+              onClick={translateSpecsToTurkish}
+              disabled={isTranslating}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors disabled:opacity-50"
+              title="İngilizce özellik adlarını Türkçe'ye çevir"
+            >
+              {isTranslating ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                  Çevriliyor...
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                  </svg>
+                  TR Çevir
+                </>
+              )}
+            </button>
+          )}
+          <Link href="/admin/products/new">
+            <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Yeni Ürün Ekle
+            </button>
+          </Link>
+        </div>
       </div>
 
       {/* Search */}
