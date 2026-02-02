@@ -12,16 +12,6 @@ import secure3 from "../../assets/secure3.png";
 import kamyon from "../../assets/kamyon.png";
 import onaylı2 from "../../assets/onaylı3.png";
 
-const styles = {
-  '.no-scrollbar::-webkit-scrollbar': {
-    display: 'none',
-  },
-  '.no-scrollbar': {
-    '-ms-overflow-style': 'none',
-    'scrollbar-width': 'none',
-  }
-};
-
 export default function ProductPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -115,14 +105,11 @@ export default function ProductPage() {
           
           {/* Image Carousel */}
           <div 
-            className="overflow-x-auto scroll-smooth snap-x snap-mandatory" 
+            className="overflow-x-auto scroll-smooth snap-x snap-mandatory hide-scrollbar" 
             style={{
               WebkitOverflowScrolling: 'touch',
               msOverflowStyle: 'none',
-              scrollbarWidth: 'none',
-              '&::-webkit-scrollbar': {
-                display: 'none'
-              }
+              scrollbarWidth: 'none'
             }}
             onScroll={handleScroll}
           >

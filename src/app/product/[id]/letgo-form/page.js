@@ -149,6 +149,26 @@ const page = () => {
     bank: 'Akbank'
   });
   const [activeStep, setActiveStep] = useState(0);
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    surname: '',
+    phone: '',
+    addressName: '',
+    address: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [copiedIban, setCopiedIban] = useState('');
+  const [copiedAccountHolder, setCopiedAccountHolder] = useState('');
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isPaymentValid, setIsPaymentValid] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [notificationType, setNotificationType] = useState('');
 
   // Load product and settings
   useEffect(() => {
@@ -182,6 +202,20 @@ const page = () => {
     loadData();
   }, [id]);
 
+  // Scroll to top when step changes
+  useEffect(() => {
+    if (activeStep === 2 || activeStep === 3 || activeStep === 1) {
+      setTimeout(() => {
+        if (typeof window !== 'undefined') {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    }
+  }, [activeStep]);
+
   if (isProductLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -197,26 +231,7 @@ const page = () => {
       </div>
     );
   }
-  const [selectedProvince, setSelectedProvince] = useState('');
-  const [selectedDistrict, setSelectedDistrict] = useState('');
-  const [formData, setFormData] = useState({
-    name: '',
-    surname: '',
-    phone: '',
-    addressName: '',
-    address: ''
-  });
-  const [errors, setErrors] = useState({});
-  const [isFormValid, setIsFormValid] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
-  const [copiedIban, setCopiedIban] = useState('');
-  const [copiedAccountHolder, setCopiedAccountHolder] = useState('');
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
-  const [isPaymentValid, setIsPaymentValid] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [notificationType, setNotificationType] = useState('');
+
   const steps = ['Ürün', 'Adres', 'Ödeme', 'Ödeme Al'];
 
   // İl listesi
@@ -519,24 +534,6 @@ const page = () => {
     setShowSuccessPopup(false);
     window.location.href = 'https://www.sahibinden.com';
   };
-
-  const scrollToTop = () => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (activeStep === 2 || activeStep === 3 || activeStep === 1) {
-      // Küçük bir gecikme ekleyerek DOM'un tamamen yüklenmesini bekleyelim
-      setTimeout(() => {
-        scrollToTop();
-      }, 100);
-    }
-  }, [activeStep]);
 
   // Add Navbar component after imports
   const Navbar = () => {

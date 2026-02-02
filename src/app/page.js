@@ -11,16 +11,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { productData } from './data/productData';
 
-const styles = {
-  '.no-scrollbar::-webkit-scrollbar': {
-    display: 'none',
-  },
-  '.no-scrollbar': {
-    '-ms-overflow-style': 'none',
-    'scrollbar-width': 'none',
-  }
-};
-
 export default function Home() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
